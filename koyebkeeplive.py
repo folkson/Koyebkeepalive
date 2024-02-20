@@ -38,7 +38,7 @@ def telegram():
         url = f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage"
         data = {
             'chat_id': TG_USER_ID,
-            'text': f"Freenom 域名续期日志\n{desp}",
+            'text': f"日志\n{desp}",
             'parse_mode': 'HTML'
         }
         response = requests.post(url, data=data)
@@ -49,7 +49,7 @@ def telegram():
     except Exception as e:
         log(f"Telegram推送时出错: {str(e)}")
 
-    # 消息推送
-    if TG_BOT_TOKEN and TG_USER_ID and len(desp) > 0:
-        telegram()
-        sys.exit(0)
+# 消息推送
+if TG_BOT_TOKEN and TG_USER_ID and len(desp) > 0:
+    telegram()
+    sys.exit(0)
