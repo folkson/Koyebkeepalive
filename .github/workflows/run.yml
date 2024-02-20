@@ -36,7 +36,7 @@ jobs:
           TG_USER_ID: ${{ secrets.TG_USER_ID }}
         run: |
           pip install requests
-          python3 koyebkeeplive.py
+          python3 koyebkeepalive.py
           git checkout --orphan tmp_work
           git branch -d main
           echo "DATE=$(date "+%Y/%m/%d")" >> $GITHUB_ENV
