@@ -3,7 +3,7 @@ name: "Freenom"
 on:
   workflow_dispatch:
   schedule:
-    - cron: "10 22 * * */2222"
+    - cron: "10 22 * * *"
 
 permissions:
   contents: write
@@ -36,7 +36,7 @@ jobs:
           TG_USER_ID: ${{ secrets.TG_USER_ID }}
         run: |
           pip install requests
-          python3 Freenom.py
+          python3 koyebkeeplive.py
           git checkout --orphan tmp_work
           git branch -d main
           echo "DATE=$(date "+%Y/%m/%d")" >> $GITHUB_ENV
