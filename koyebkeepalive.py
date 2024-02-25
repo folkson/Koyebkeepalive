@@ -24,7 +24,7 @@ response = requests.get(url, headers=headers)
 # 检查响应状态码
 if response.status_code == 200:
     log("请求成功！")
-    log("响应内容：" + str(response.text))
+    # log("响应内容：" + str(response.text))
 else:
     log("请求失败，状态码：" + str(response.status_code))
 
