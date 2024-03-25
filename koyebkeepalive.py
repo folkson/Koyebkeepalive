@@ -19,7 +19,7 @@ TG_USER_ID = os.environ.get('TG_USER_ID')
 
 def telegram():
     try:
-        url = f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage"
+        url = f"https://push.coco88.tk/bot{TG_BOT_TOKEN}/sendMessage"
         data = {
             'chat_id': TG_USER_ID,
             'text': f"日志\n{desp}",
