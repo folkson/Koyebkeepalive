@@ -1,59 +1,57 @@
-name: "Freenom"
+name: "Freenom"  # 工作流程的名称
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "25 * * * *"
+  workflow_dispatch:  # 允许手动触发工作流程
+  schedule:  # 允许按计划触发工作流程
+    - cron: "25 1 1 1 1"  # 
 
 permissions:
-  contents: write
-  packages: write
-  actions: write
+  contents: write  # 允许写入内容
+  packages: write  # 允许写入包
+  actions: write  # 允许写入操作
 
 jobs:
   Freenom:
-    runs-on: ubuntu-latest
-    name: "Freenom"
+    runs-on: ubuntu-latest  # 在最新的Ubuntu系统上运行作业
+    name: "Freenom"  # 作业的名称
     steps:
-      - name: checkout
-        uses: actions/checkout@v4.1.1
+      - name: checkout  # 步骤的名称，用于检出存储库
+        uses: actions/checkout@v4.1.1  # 使用指定版本的checkout操作
+
+      - name: Set up Python  # 设置Python环境的步骤
+        uses: actions/setup-python@v5.0.0  # 使用指定版本的设置Python操作
         with:
-          fetch-depth: 0
+          python-version: 3.12  # 设置Python版本为3.12
 
-      - name: Set up Python
-        uses: actions/setup-python@v5.0.0
+      - name: Set up WARP  # 设置WARP的步骤
+        uses: fscarmen/warp-on-actions@v1.0  # 使用指定版本的WARP操作
+
+      - name: Run python  # 运行Python脚本的步骤
+        env:  # 定义环境变量
+          FREENOM_USERNAME: ${{ secrets.FREENOM_USERNAME }}  # 设置Freenom用户名
+          FREENOM_PASSWORD: ${{ secrets.FREENOM_PASSWORD }}  # 设置Freenom密码
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}  # 设置Telegram机器人令牌
+          TG_USER_ID: ${{ secrets.TG_USER_ID }}  # 设置Telegram用户ID
+        run: |  # 运行多行命令
+          pip install requests  # 安装requests库
+          python3 koyebkeepalive.py  # 运行Python脚本
+          git checkout --orphan tmp_work  # 检出或创建孤立分支tmp_work
+          git branch -d main  # 删除主分支
+          echo "DATE=$(date "+%Y/%m/%d")" >> $GITHUB_ENV  # 输出当前日期到环境变量$GITHUB_ENV
+
+      - name: Upload to repository  # 上传到存储库的步骤
+        uses: stefanzweifel/git-auto-commit-action@v4.16.0  # 使用指定版本的自动提交到Git操作
         with:
-          python-version: 3.12
+          commit_message: ${{ env.DATE }}  # 提交信息为当前日期
+          create_branch: true  # 创建分支
+          branch: main  # 分支名称为main
+          push_options: --force  # 强制推送选项
 
-      - name: Set up WARP
-        uses: fscarmen/warp-on-actions@v1.0
-
-      - name: Run python
-        env:
-          FREENOM_USERNAME: ${{ secrets.FREENOM_USERNAME }}
-          FREENOM_PASSWORD: ${{ secrets.FREENOM_PASSWORD }}
-          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
-          TG_USER_ID: ${{ secrets.TG_USER_ID }}
-        run: |
-          pip install requests
-          python3 koyebkeepalive.py
-          git checkout --orphan tmp_work
-          git branch -d main
-          echo "DATE=$(date "+%Y/%m/%d")" >> $GITHUB_ENV
-
-      - name: Upload to repository
-        uses: stefanzweifel/git-auto-commit-action@v4.16.0
+      - name: Delete old workflow runs  # 删除旧工作流程运行的步骤
+        uses: Mattraks/delete-workflow-runs@v2.0.6  # 使用指定版本的删除工作流程运行操作
         with:
-          commit_message: ${{ env.DATE }}
-          create_branch: true
-          branch: main
-          push_options: --force
-
-      - name: Delete old workflow runs
-        uses: Mattraks/delete-workflow-runs@v2.0.6
-        with:
-          token: ${{ github.token }}
-          repository: ${{ github.repository }}
-          retain_days: 0
-          keep_minimum_runs: 0
-          delete_run_by_conclusion_pattern: "cancelled, skipped, success"
+          token: ${{ github.token }}  # GitHub令牌
+          repository: ${{ github.repository }}  # GitHub存储库
+          retain_days: 0  # 保留0天
+          keep_minimum_runs: 0  # 保留最少0个运行
+          delete_run_by_conclusion_pattern: "cancelled, skipped, success"  # 根据条件删除运行
