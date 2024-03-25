@@ -2,6 +2,8 @@ name: "Freenom"
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "25 * * * *"
 
 permissions:
   contents: write
