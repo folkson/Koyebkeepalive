@@ -3,7 +3,7 @@ name: "Freenom"  # 工作流程的名称
 on:
   workflow_dispatch:  # 允许手动触发工作流程
   schedule:  # 允许按计划触发工作流程
-    - cron: "25 1 1 1 1"  # 
+    - cron: "25 * * * *"  # 
 
 permissions:
   contents: write  # 允许写入内容
